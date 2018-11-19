@@ -1,0 +1,67 @@
+---
+# This docker-compose.yml file is intended for testing the eWallet server.
+# You will need to replace EWALLET_SECRET_KEY and LOCAL_LEDGER_SECRET_KEY
+# which can be obtained by running:
+#
+#    $ elixir -e "IO.puts 32 |> :crypto.strong_rand_bytes() |> Base.encode64()"
+#
+# Alternatively, you may use the generate-override.sh script provided in this
+# directory to automatically generate all the necessary configuration attributes:
+#
+#    $ ./generate-override.sh > docker-compose.override.yml
+#
+# Then run the following to start eWallet:
+#
+#    $ docker-compose up -d
+#
+# After docker-compose is up, setup the inital database with:
+#
+#    $ docker exec -it docker_ewallet_1 bin/ewallet initdb
+#    $ docker exec -it docker_ewallet_1 bin/ewallet seed
+#
+# Please get in touch via Gitter in case you have any problems. We're happy to help!
+# https://gitter.im/omisego/ewallet
+
+version: "3"
+services:
+  postgres:
+    image: postgres:9.6.9-alpine
+    restart: always
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    networks:
+      - intnet
+    environment:
+      POSTGRESQL_PASSWORD: passw0rd
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "postgres"]
+      interval: 30s
+      retries: 3
+
+  mail:
+    image: mailhog/mailhog:v1.0.0
+    restart: always
+    networks:
+      - intnet
+
+  ewallet:
+    image: omisego/ewallet:dev
+    restart: always
+    networks:
+      - intnet
+    depends_on:
+      - postgres
+      - mail
+    environment:
+      DATABASE_URL: "postgresql://postgres:passw0rd@postgres:5432/ewallet"
+      LOCAL_LEDGER_DATABASE_URL: "postgresql://postgres:passw0rd@postgres:5432/local_ledger"
+      EWALLET_SECRET_KEY: "CHANGE_ME"
+      LOCAL_LEDGER_SECRET_KEY: "CHANGE_ME"
+      SMTP_HOST: mail
+      SMTP_PORT: 1025
+
+networks:
+  intnet:
+
+volumes:
+  postgres-db:

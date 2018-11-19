@@ -4,7 +4,6 @@
 /deps/
 /docs/
 /.fetch
-*.ez
 node_modules
 
 # Erlang
