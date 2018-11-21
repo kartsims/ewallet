@@ -1,0 +1,47 @@
+admin.reset_password:
+  post:
+    tags:
+      - Admin
+    summary: Sends an email containing a link to reset the password.
+    operationId: password_reset
+    security:
+      - ClientAuth: []
+    requestBody:
+      $ref: 'request_bodies.yaml#/ResetPasswordBody'
+    responses:
+      '200':
+        $ref: '../shared/responses.yaml#/EmptyResponse'
+      '500':
+        $ref: '../shared/responses.yaml#/InternalServerError'
+
+admin.update_password:
+  post:
+    tags:
+      - Admin
+    summary: Reset the password for a specific token with the provided new password.
+    operationId: password_update
+    security:
+      - ClientAuth: []
+    requestBody:
+      $ref: 'request_bodies.yaml#/UpdatePasswordBody'
+    responses:
+      '200':
+        $ref: '../shared/responses.yaml#/EmptyResponse'
+      '500':
+        $ref: '../shared/responses.yaml#/InternalServerError'
+
+admin.verify_email_update:
+  post:
+    tags:
+      - Admin
+    summary: Verifies the email to be updated to the admin user
+    operationId: admin_verify_email_update
+    security:
+      - ClientAuth: []
+    requestBody:
+      $ref: 'request_bodies.yaml#/AdminVerifyEmailUpdateBody'
+    responses:
+      '200':
+        $ref: '../user/responses.yaml#/UserResponse'
+      '500':
+        $ref: '../shared/responses.yaml#/InternalServerError'

@@ -1,0 +1,62 @@
+ResetPasswordBody:
+  description: The parameters to use for requesting a reset password
+  required: true
+  content:
+    application/vnd.omisego.v1+json:
+      schema:
+        properties:
+          email:
+            type: string
+            format: email
+          redirect_url:
+            type: string
+        required:
+          - email
+          - redirect_url
+        example:
+          email: "test@example.com"
+          redirect_url: "https://example.com/admin/update_password?email={email}&token={token}"
+
+UpdatePasswordBody:
+  description: The parameters to use for reseting a password
+  required: true
+  content:
+    application/vnd.omisego.v1+json:
+      schema:
+        properties:
+          email:
+            type: string
+            format: email
+          token:
+            type: string
+          password:
+            type: string
+            format: password
+          password_confirmation:
+            type: string
+            format: password
+        required:
+          - email
+          - redirect_url
+          - password
+          - password_confirmation
+        example:
+          email: "test@example.com"
+          token: "26736ca1-43a0-442b-803e-76220cd3cb1d"
+          password: "nZi9Enc5$l#"
+          password_confirmation: "nZi9Enc5$l#"
+
+AdminVerifyEmailUpdateBody:
+  description: The parameters to use for verifying an email update
+  required: true
+  content:
+    application/vnd.omisego.v1+json:
+      schema:
+        properties:
+          email:
+            type: string
+          token:
+            type: string
+        example:
+          email: "new.email@example.com"
+          token: "verification_token"
